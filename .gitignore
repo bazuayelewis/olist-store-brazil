@@ -1,0 +1,9 @@
+olist-env
+kaggle.json
+.env
+postgres-db-volume
+logs
+plugins
+config
+data
+__pycache__
