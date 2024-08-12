@@ -1,0 +1,16 @@
+version: 2
+
+models:
+  - name: base_product_category_name_translation
+    description: "Base model for the products table"
+    columns:
+      - name: product_category_name
+        description: "The primary key for this table"
+        data_tests:
+          - unique
+          - not_null
+      - name: product_category_name_english
+        description: ""
+        data_tests:
+          - unique
+          - not_null
