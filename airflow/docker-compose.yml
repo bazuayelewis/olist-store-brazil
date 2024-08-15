@@ -4,23 +4,21 @@ x-airflow-common:
   # In order to add custom dependencies or upgrade provider packages you can use your extended image.
   # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
   # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
-  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.7.1}
-  #build: .
+  #image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.9.3}
+  build: .
   env_file:
     - .env
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
-    # For backward compatibility, with Airflow <2.3
-    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:-airflow}@${POSTGRES_HOST:-postgres}/${POSTGRES_DB:-airflow}
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
     AIRFLOW__CORE__TEST_CONNECTION: 'Enabled'
-    GOOGLE_APPLICATION_CREDENTIALS: '${GOOGLE_APPLICATION_CREDENTIALS}'
-    AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: '{"conn_type": "google_cloud_platform", "extra": {"key_path": "${GOOGLE_APPLICATION_CREDENTIALS}", "scope": "https://www.googleapis.com/auth/cloud-platform", "project": "airflow", "num_retries": 5}}'
+    GOOGLE_APPLICATION_CREDENTIALS: '${AIRFLOW_GOOGLE_APPLICATION_CREDENTIALS:-/opt/airflow/auth}'
+    AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: '{"conn_type": "google_cloud_platform", "extra": {"key_path": "${AIRFLOW_GOOGLE_APPLICATION_CREDENTIALS:-/opt/airflow/auth}", "scope": "https://www.googleapis.com/auth/cloud-platform", "project": "airflow", "num_retries": 5}}'
     # yamllint disable rule:line-length
     # Use simple http server on scheduler for health checks
     # See https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/check-health.html#scheduler-health-check-server
@@ -31,10 +29,13 @@ x-airflow-common:
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
+    - ${AIRFLOW_PROJ_DIR:-.}/dags/utils:/opt/airflow/dags/utils
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
     - ${AIRFLOW_PROJ_DIR:-.}/data:/opt/airflow/data
+    - ${DBT_PROJ_DIR:-../dbt/olist_store}:/opt/airflow/dbt
+    - ${GOOGLE_AUTH_CRED}:${AIRFLOW_GOOGLE_APPLICATION_CREDENTIALS:-/opt/airflow/auth}
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -45,15 +46,15 @@ services:
   postgres:
     image: postgres:13
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:-airflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-airflow}
+      POSTGRES_DB: ${POSTGRES_DB:-airflow}
     volumes:
       - ./postgres-db-volume:/var/lib/postgresql/data
     ports:
-      - ${POSTGRES_PORT}:5432
+      - 5433:${POSTGRES_PORT:-5432}
     healthcheck:
-      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER:-airflow} -d ${POSTGRES_DB:-airflow}'"]
       interval: 10s
       retries: 5
       start_period: 5s

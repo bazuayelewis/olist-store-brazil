@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: stg_products
+    description: "Staging model for the products table"
+    columns:
+      - name: product_id
+        description: "The primary key for this table"
+        data_tests:
+          - unique
+          - not_null
+      - name: product_category_name
+        description: ""
+      - name: product_name_length
+        description: ""
+      - name: product_description_length
+        description: ""
+      - name: product_photos_qty
+        description: ""
+      - name: product_weight_g
+        description: ""
+      - name: product_length_cm
+        description: ""
+      - name: product_height_cm
+        description: ""
+      - name: product_width_cm
+        description: ""

@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: stg_geolocation
+    description: "Staging model for the geolocation table"
+    columns:
+      - name: geolocation_zip_code_prefix
+        data_tests:
+          - not_null
+      - name: geolocation_lat
+        data_tests:
+          - not_null
+      - name: geolocation_lng
+        data_tests:
+          - not_null
+      - name: geolocation_city
+        data_tests:
+          - not_null
+      - name: geolocation_state
+        data_tests:
+          - not_null

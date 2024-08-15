@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: stg_sellers
+    description: "Staging model for the sellers table"
+    columns:
+      - name: seller_id
+        description: "The primary key for this table"
+        data_tests:
+          - unique
+          - not_null
+      - name: seller_zip_code_prefix
+        description: ""
+        data_tests:
+          - not_null
+      - name: seller_city
+        description: ""
+        data_tests:
+          - not_null
+      - name: seller_state
+        description: ""
+        data_tests:
+          - not_null

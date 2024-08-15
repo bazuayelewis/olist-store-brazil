@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Staging model for the customers table"
+    columns:
+      - name: customer_id
+        description: "The primary key for this table"
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_unique_id
+        description: "This is a unique id for each customer to track returning customers"
+        data_tests:
+          - not_null
+      - name: customer_zip_code_prefix
+        description: "Zip code prefix for each customer"
+        data_tests:
+          - not_null
+      - name: customer_city
+        description: "City where each customer resides"
+        data_tests:
+          - not_null
+      - name: customer_state
+        description: "State where each customer resides"
+        data_tests:
+          - not_null
