@@ -2,15 +2,15 @@ version: 2
 
 models:
   - name: base_product_category_name_translation
-    description: "Base model for the products table"
+    description: "Base model for the products category name translation table to help translate from portugese to english"
     columns:
       - name: product_category_name
-        description: "The primary key for this table"
+        description: "The names of product categories in portugese"
         data_tests:
           - unique
           - not_null
       - name: product_category_name_english
-        description: ""
+        description: "The names of product categories in english"
         data_tests:
           - unique
           - not_null

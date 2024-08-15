@@ -5,25 +5,25 @@ models:
     description: "Staging model for the order_items table"
     columns:
       - name: order_id
-        description: ""
+        description: "Order id for each product purchased. An order id can be repeated if multiple products were bought"
         data_tests:
           - not_null
           - relationships:
               to: ref('stg_orders')
               field: order_id
       - name: order_item_id
-        description: ""
+        description: "Unit of items purchased"
         data_tests:
           - not_null
       - name: product_id
-        description: ""
+        description: "Identifier for each product"
         data_tests:
           - not_null
           - relationships:
               to: ref('stg_products')
               field: product_id
       - name: seller_id
-        description: ""
+        description: "Identifier for each seller fulfilling an order"
         data_tests:
           - not_null
           - relationships:
@@ -34,10 +34,10 @@ models:
         data_tests:
           - not_null
       - name: price
-        description: ""
+        description: "Price per unit of each product"
         data_tests:
           - not_null
       - name: freight_value
-        description: ""
+        description: "Freight value per unit of each product"
         data_tests:
           - not_null

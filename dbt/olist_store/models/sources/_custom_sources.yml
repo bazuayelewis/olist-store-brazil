@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: olist_stores_br
-    database: airflow
+    database: "{{ env_var('POSTGRES_DB') }}"
     schema: public
     tables:
       - name: customers
