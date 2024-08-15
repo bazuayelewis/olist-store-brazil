@@ -31,7 +31,6 @@ clean-targets:         # directories to be removed by `dbt clean`
 # files using the `{{ config(...) }}` macro.
 models:
   olist_store:
-    # Config indicated by + and applies to all files under models/example/
     sources:
       +materialized: view
       +schema: staging
