@@ -33,16 +33,12 @@ with DAG(
     task_2 = PythonOperator(
         task_id="postgres_ingestion", python_callable=elt_local_to_psql
     )
-    
-    task_3 = PythonOperator(
-        task_id='gcs_upload', python_callable=elt_psql_to_gcs
-   )
-    task_4 = PythonOperator(
-        task_id='bigquery_upload', python_callable=elt_gcs_to_bq
-    )
-    
+
+    task_3 = PythonOperator(task_id="gcs_upload", python_callable=elt_psql_to_gcs)
+    task_4 = PythonOperator(task_id="bigquery_upload", python_callable=elt_gcs_to_bq)
+
     task_5 = TriggerDagRunOperator(
         task_id="trigger_dbt_dag", trigger_dag_id="dbt_transform_raw"
     )
 
-    task_1 >> task_2 >> task_3  >> task_4 >> task_5
+    task_1 >> task_2 >> task_3 >> task_4 >> task_5
