@@ -30,17 +30,17 @@ I opted to use an ELT pipeline architecture. The pipeline automates the process 
 
 
 ## Data Transformations
-All transformations to the data was done with a singular tool, **`dbt`**. This was used to build models, clean up the raw data, ensure data quality by running tests and enforcing the correct data types for columns.
+All transformations to the data were done with a singular tool, **`dbt`**. This was used to build models, clean up the raw data, and ensure data quality by running tests and enforcing the correct data types for columns.
 
 Over 15 models were built and to properly explain them I shall be classifying them into 4 types (Base, Staging, Intermediate and Final Models).
 
-- Base Models: This model prefixed with `base_` was joined with a staging model to give extra context to the model. The model is not used anywhere else downstream so there is no reason to make it a staging model. For this project, the `product_category_name_translation` table served as a base model to the `products` table to translate the product_category_name to english from portugese.
+- Base Models: This model prefixed with `base_` was joined with a staging model to give extra context to the model. The model is not used anywhere else downstream so there is no reason to make it a staging model. For this project, the `product_category_name_translation` table served as a base model to the `products` table to translate the product_category_name to English from Portuguese.
 
-- Staging Models: This model prefixed with `stg_` serves as a source that maps one to one with the raw tables. This helps with complex queries downstream. Each staging model has a "<model_name>.yml" file where unique, not null and relationships tests are defined. For this project, renaming coulumns and selecting suitable data types were handled by our staging models. 
+- Staging Models: This model prefixed with `stg_` serves as a source that maps one-to-one with the raw tables. This helps with complex queries downstream. Each staging model has a "<model_name>.yml" file where unique, not null, and relationship tests are defined. For this project, renaming columns and selecting suitable data types were handled by our staging models. 
 
 - Intermediate Models: This model prefixed with `int_` performs complex queries like joins and aggregations. It is built upon the staging models.
 
-- Final Models: This model prefixed with `fct_` provides clean and transfromed data requested by the stakeholder. They are usually answers to specific businsess logic.
+- Final Models: This model prefixed with `fct_` provides clean and transformed data requested by the stakeholder. They are usually answers to specific business logic.
 
 ## Prerequisites
 - Google Cloud Platform account
@@ -65,7 +65,7 @@ git clone https://github.com/bazuayelewis/olist-store-brazil.git
 1. Go to [Google Cloud Service Account](https://console.cloud.google.com/iam-admin/serviceaccounts)
 2. Select the Project you are working with
 3. Create a service account
-4. Grant the following roles to the service account(Storage Admin, Bigquery Data Editor, Bigquery Data Viewer)
+4. Grant the following roles to the service account(Storage Admin, Bigquery Data Editor, Bigquery Job User)
 5. Add a new key and download as a json file
 
 
@@ -149,7 +149,7 @@ LIMIT 5
 
 
 ## Contributing
-Contributions are welcome! Please fork the repository and create a pull request with your changes. I would review and approve if neccessary.
+Contributions are welcome! Please fork the repository and create a pull request with your changes. I would review and approve if necessary.
 
 ## License 
 This project is licensed under the MIT License 
