@@ -35,7 +35,7 @@ class GCSManager:
         bucket_name: str,
         blob_name: str,
         data,
-        content_type="text/csv",
+        content_type="application/octet-stream",
     ) -> str:
         """
         This function uploads data into GCS bucket and returns a gsutil URI
@@ -43,6 +43,7 @@ class GCSManager:
         bucket = self.client.bucket(bucket_name)
         blob = bucket.blob(blob_name)
         csv_string = data.to_csv(index=False)
-        blob.upload_from_string(csv_string, content_type)
+        parquet_string = data.to_parquet(index=False)
+        blob.upload_from_string(parquet_string, content_type)
         logging.info(f"Successfully uploaded {blob_name} to GCS")
         return f"gs://{bucket_name}/{blob_name}"

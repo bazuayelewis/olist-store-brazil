@@ -47,6 +47,7 @@ class BQManager:
         table_ref = self.client.dataset(dataset_id).table(table_id)
         try:
             job_config = bigquery.LoadJobConfig(
+                source_format=bigquery.SourceFormat.PARQUET,
                 autodetect=True,
                 create_disposition=bigquery.CreateDisposition.CREATE_IF_NEEDED,
                 write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
