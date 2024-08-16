@@ -2,8 +2,8 @@ version: 2
 
 sources:
   - name: olist_stores_br
-    database: "{{ env_var('DATASET_ID') }}" 
-    schema: public
+    database: "{{ env_var('PROJECT_ID') }}" 
+    schema: "{{ env_var('DATASET_ID') }}"
     tables:
       - name: customers
       - name: geolocation
