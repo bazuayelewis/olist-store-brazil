@@ -21,7 +21,7 @@ products as (
         when product_category_name_english is null 
         then product_category_name 
         else product_category_name_english 
-        end as "product_category_name"
+        end as product_category_name
     , product_name_length
     , product_description_length
     , product_photos_qty

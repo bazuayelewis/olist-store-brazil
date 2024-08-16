@@ -41,7 +41,7 @@ def elt_psql_to_gcs():
 
 def elt_gcs_to_bq():
     context = get_current_context()
-    uri_list = context["ti"].xcom_pull(task_ids="GCS_upload")
+    uri_list = context["ti"].xcom_pull(task_ids="gcs_upload")
     client = BQManager(PROJECT_ID)
     client.create_dataset(DATASET_ID)
     for file_uri in uri_list:
