@@ -123,22 +123,29 @@ WHERE
         )
 ```
 
+![Sales by Category](images/sales-by-category.png)
+
 2. What is the average delivery time for orders?
 ```sql
 SELECT 
     AVG(delivery_time) AS avg_deliver_time
 FROM 
     reporting.fct_avg_delivery_time
+--Average delivery time: 2 days 29 hours 27 minutes 36 seconds
 ```
+
+![Average Delivery Time](images/avg-delivery-time.png)
 
 3. Which states have the highest number of orders?
 ```sql
 -- TOP 5 STATES WITH THE MOST ORDERS
-SELECT states, total_orders
+SELECT customer_state, total_orders
 FROM reporting.fct_orders_by_state
-ORDER BY total_orders desc
+ORDER BY total_orders desc   --Not needed since the int_orders_by_state model is already ordered
 LIMIT 5
 ```
+
+![Most Orders Query in Bigquery](images/orders-by-state.png)
 
 
 ## Contributing
