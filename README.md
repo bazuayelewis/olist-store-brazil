@@ -26,7 +26,7 @@ This repository contains my capstone project for the Data Engineering course at 
 ## Architecture
 I opted to use an ELT pipeline architecture. The pipeline automates the process of extracting data from a [kaggle datasets](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), loading it into a PostgreSQL database (ecommerce), staging each table into a Google Cloud Storage (GCS) bucket, uploading staged data into a Bigquery Dataset and using dbt to transform the raw data and write the transformed data in a dataset in Bigquery.
 
-![olist-store-brazil-architecture](images/olist-store-arcitecture.gif)
+![olist-store-brazil-architecture](images/olist-store-brazil-architecture.gif)
 
 
 ## Data Transformations
