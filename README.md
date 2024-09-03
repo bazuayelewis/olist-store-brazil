@@ -26,7 +26,7 @@ This repository contains my capstone project for the Data Engineering course at 
 ## Architecture
 I opted to use an ELT pipeline architecture. The pipeline automates the process of extracting data from a [kaggle datasets](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), loading it into a PostgreSQL database (ecommerce), staging each table into a Google Cloud Storage (GCS) bucket, uploading staged data into a Bigquery Dataset and using dbt to transform the raw data and write the transformed data in a dataset in Bigquery.
 
-![capstone-architecture](images/altschool-capstone.png)
+![olist-store-brazil-architecture](images/olist-store-arcitecture.gif)
 
 
 ## Data Transformations
@@ -59,7 +59,7 @@ git clone https://github.com/bazuayelewis/olist-store-brazil.git
 ### Creating Kaggle API Token
 1. Go to your [Kaggle](https://www.kaggle.com/settings) Account
 2. Create a new token
-3. Copy your key and username
+3. Copy your key and username from the JSON file
 
 ### Creating a Service Account
 1. Go to [Google Cloud Service Account](https://console.cloud.google.com/iam-admin/serviceaccounts)
@@ -115,7 +115,7 @@ SELECT
     product_category_name
     , total_sales 
 FROM 
-    reporting.fct_sales_by_category
+    olist_reporting.fct_sales_by_category
 WHERE 
     total_sales = (
         SELECT MAX(total_sales) AS highest_sales
@@ -130,7 +130,7 @@ WHERE
 SELECT 
     AVG(delivery_time) AS avg_deliver_time
 FROM 
-    reporting.fct_avg_delivery_time
+    olist_reporting.fct_avg_delivery_time
 --Average delivery time: 2 days 29 hours 27 minutes 36 seconds
 ```
 
@@ -140,7 +140,7 @@ FROM
 ```sql
 -- TOP 5 STATES WITH THE MOST ORDERS
 SELECT customer_state, total_orders
-FROM reporting.fct_orders_by_state
+FROM olist_reporting.fct_orders_by_state
 ORDER BY total_orders desc   --Not needed since the int_orders_by_state model is already ordered
 LIMIT 5
 ```
