@@ -24,7 +24,7 @@ This repository contains my capstone project for the Data Engineering course at 
 
 
 ## Architecture
-I opted to use an ELT pipeline architecture. The pipeline automates the process of extracting data from a [kaggle datasets](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), loading it into a PostgreSQL database (ecommerce), staging each table into a Google Cloud Storage (GCS) bucket, uploading staged data into a Bigquery Dataset and using dbt to transform the raw data and write the transformed data in a dataset in Bigquery.
+I opted to use an ELT pipeline architecture. The pipeline automates the process of extracting data from a [kaggle datasets](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), loading it into a PostgreSQL database, staging each table in a Google Cloud Storage (GCS) bucket, uploading the staged data into a Bigquery Dataset and using dbt to transform the raw data and write the transformed data into datasets in Bigquery.
 
 ![olist-store-brazil-architecture](images/olist-store-brazil-architecture.gif)
 
@@ -36,11 +36,11 @@ Over 15 models were built and to properly explain them I shall be classifying th
 
 - Base Models: This model prefixed with `base_` was joined with a staging model to give extra context to the model. The model is not used anywhere else downstream so there is no reason to make it a staging model. For this project, the `product_category_name_translation` table served as a base model to the `products` table to translate the product_category_name to English from Portuguese.
 
-- Staging Models: This model prefixed with `stg_` serves as a source that maps one-to-one with the raw tables. This helps with complex queries downstream. Each staging model has a "<model_name>.yml" file where unique, not null, and relationship tests are defined. For this project, renaming columns and selecting suitable data types were handled by our staging models. 
+- Staging Models: This model prefixed with `stg_` serves as a source that maps one-to-one with the raw tables. This helps with complex queries downstream. Each staging model has a "<model_name>.yml" file where unique, not null, and relationship tests are defined and also descriptions of columns are included. For this project, renaming columns and selecting suitable data types were done with the staging models. 
 
 - Intermediate Models: This model prefixed with `int_` performs complex queries like joins and aggregations. It is built upon the staging models.
 
-- Final Models: This model prefixed with `fct_` provides clean and transformed data requested by the stakeholder. They are usually answers to specific business logic.
+- Final Models: This model prefixed with `fct_` provides clean and transformed data requested by the stakeholder. They are usually narrowed down to a specific business goal/objective.
 
 ## Prerequisites
 - Google Cloud Platform account
