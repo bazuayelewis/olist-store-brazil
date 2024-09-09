@@ -10,7 +10,9 @@ import logging
 def extract_data():
     kaggle_url = KAGGLE_URL
     data_path = DATA_DIR
-    file_list = kaggle_downloader(kaggle_url, data_path)
+    kaggle_username = KAGGLE_USERNAME
+    kaggle_key = KAGGLE_KEY
+    file_list = kaggle_downloader(kaggle_username, kaggle_key, kaggle_url, data_path)
     return file_list
 
 
@@ -19,18 +21,17 @@ def elt_local_to_psql():
     file_list = context["ti"].xcom_pull(task_ids="kaggle_datasets_download")
     data_path = DATA_DIR
     connection_string = CONNECTION_STRING
-
-    column_list = load_data_to_psql(file_list, data_path, connection_string)
-    return column_list
+    table_list = load_data_to_psql(file_list, data_path, connection_string)
+    return table_list
 
 
 def elt_psql_to_gcs():
     context = get_current_context()
-    col_list = context["ti"].xcom_pull(task_ids="postgres_ingestion")
+    table_list = context["ti"].xcom_pull(task_ids="postgres_ingestion")
     client = GCSManager(PROJECT_ID)
-    client.create_bucket(BUCKET_NAME)
+    client.create_bucket(BUCKET_NAME, LOCATION)
     file_uri = []
-    for table_name in col_list:
+    for table_name in table_list:
         olist_data = extract_from_psql(table_name, CONNECTION_STRING)
         uri = client.upload_to_gcs_bucket(
             BUCKET_NAME, blob_name=table_name, data=olist_data
@@ -47,7 +48,7 @@ def elt_gcs_to_bq():
     for file_uri in uri_list:
         table_id = file_uri.split("/")[-1]
         client.create_table(DATASET_ID, table_id)
-        client.load_to_bigquery(file_uri, DATASET_ID, table_id)
+        client.load_to_bigquery(file_uri, DATASET_ID, table_id, LOCATION)
     logging.info(f"All {len(uri_list)} files loaded to {DATASET_ID}")
 
 
