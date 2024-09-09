@@ -40,7 +40,9 @@ class BQManager:
             logging.error(f"Encountered issue creating the table {table_id}: {e}")
             raise e
 
-    def load_to_bigquery(self, file_uri: str, dataset_id: str, table_id: str) -> None:
+    def load_to_bigquery(
+        self, file_uri: str, dataset_id: str, table_id: str, location: str
+    ) -> None:
         """
         This function loads data from a gcs bucket using the file uri into bigquery
         """
@@ -53,7 +55,7 @@ class BQManager:
                 write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
             )
             load_job = self.client.load_table_from_uri(
-                file_uri, table_ref, job_config=job_config
+                file_uri, table_ref, location, job_config=job_config
             )
             load_job.result()
             logging.info(f"Successfully loaded {file_uri} to {dataset_id} dataset")

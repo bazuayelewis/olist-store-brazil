@@ -13,8 +13,8 @@ class GCSManager:
     def create_bucket(
         self,
         bucket_name: str,
+        location: str,
         storage_class: str = "STANDARD",
-        location: str = "europe-west1",
     ) -> None:
         """
         This function creates a bucket in GCS with a default storage class and location.
@@ -42,7 +42,6 @@ class GCSManager:
         """
         bucket = self.client.bucket(bucket_name)
         blob = bucket.blob(blob_name)
-        csv_string = data.to_csv(index=False)
         parquet_string = data.to_parquet(index=False)
         blob.upload_from_string(parquet_string, content_type)
         logging.info(f"Successfully uploaded {blob_name} to GCS")
