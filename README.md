@@ -106,7 +106,7 @@ Once all services are healthy. Go to [`http://127.0.0.1:8080/`](http://127.0.0.1
 Navigate to the airflow UI and login with your credentials. If not set use default credentials:- username: *`airflow`*, password: *`airflow`* 
 
 After successfully logging in, navigate to the `elt-psql-to-bigquery` DAG and manually trigger it. This could also be set to run on a schedule.
-
+![airflow-dag-run](images/airflow-dag-run.png)
 
 ## Analysis
 1. Which product categories have the highest sales?
@@ -119,7 +119,7 @@ FROM
 WHERE 
     total_sales = (
         SELECT MAX(total_sales) AS highest_sales
-        FROM reporting.fct_sales_by_category
+        FROM olist_reporting.fct_sales_by_category
         )
 ```
 
