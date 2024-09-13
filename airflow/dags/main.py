@@ -43,12 +43,12 @@ def elt_psql_to_gcs():
 def elt_gcs_to_bq():
     context = get_current_context()
     uri_list = context["ti"].xcom_pull(task_ids="gcs_upload")
-    client = BQManager(PROJECT_ID)
+    client = BQManager(PROJECT_ID, LOCATION)
     client.create_dataset(DATASET_ID)
     for file_uri in uri_list:
         table_id = file_uri.split("/")[-1]
         client.create_table(DATASET_ID, table_id)
-        client.load_to_bigquery(file_uri, DATASET_ID, table_id, LOCATION)
+        client.load_to_bigquery(file_uri, DATASET_ID, table_id)
     logging.info(f"All {len(uri_list)} files loaded to {DATASET_ID}")
 
 
