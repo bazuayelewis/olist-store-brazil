@@ -4,12 +4,13 @@ from google.cloud.exceptions import Conflict
 
 
 class BQManager:
-    def __init__(self, project_id: str) -> None:
+    def __init__(self, project_id: str, location: str) -> None:
         self.project_id = project_id
+        self.location = location
         self.client = self._start_bq_client()
 
     def _start_bq_client(self):
-        return bigquery.Client(self.project_id)
+        return bigquery.Client(self.project_id, location=self.location)
 
     def create_dataset(self, dataset_id: str) -> None:
         """
@@ -41,7 +42,7 @@ class BQManager:
             raise e
 
     def load_to_bigquery(
-        self, file_uri: str, dataset_id: str, table_id: str, location: str
+        self, file_uri: str, dataset_id: str, table_id: str
     ) -> None:
         """
         This function loads data from a gcs bucket using the file uri into bigquery
@@ -55,7 +56,7 @@ class BQManager:
                 write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
             )
             load_job = self.client.load_table_from_uri(
-                file_uri, table_ref, location, job_config=job_config
+                file_uri, table_ref, job_config=job_config
             )
             load_job.result()
             logging.info(f"Successfully loaded {file_uri} to {dataset_id} dataset")
