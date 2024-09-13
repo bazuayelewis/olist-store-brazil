@@ -16,5 +16,5 @@ olist_store:
       dataset: olist
       threads: 4
       keyfile: "{{ env_var('AIRFLOW_GOOGLE_APPLICATION_CREDENTIALS') }}"
-      location: US
+      location: "{{ env_var('LOCATION') }}"
   target: prod

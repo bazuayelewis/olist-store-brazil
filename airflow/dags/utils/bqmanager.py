@@ -4,12 +4,13 @@ from google.cloud.exceptions import Conflict
 
 
 class BQManager:
-    def __init__(self, project_id: str) -> None:
+    def __init__(self, project_id: str, location: str) -> None:
         self.project_id = project_id
+        self.location = location
         self.client = self._start_bq_client()
 
     def _start_bq_client(self):
-        return bigquery.Client(self.project_id)
+        return bigquery.Client(self.project_id, location=self.location)
 
     def create_dataset(self, dataset_id: str) -> None:
         """

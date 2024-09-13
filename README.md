@@ -24,9 +24,9 @@ This repository contains my capstone project for the Data Engineering course at 
 
 
 ## Architecture
-I opted to use an ELT pipeline architecture. The pipeline automates the process of extracting data from a [kaggle datasets](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), loading it into a PostgreSQL database (ecommerce), staging each table into a Google Cloud Storage (GCS) bucket, uploading staged data into a Bigquery Dataset and using dbt to transform the raw data and write the transformed data in a dataset in Bigquery.
+I opted to use an ELT pipeline architecture. The pipeline automates the process of extracting data from a [kaggle datasets](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), loading it into a PostgreSQL database, staging each table in a Google Cloud Storage (GCS) bucket, uploading the staged data into a Bigquery Dataset and using dbt to transform the raw data and write the transformed data into datasets in Bigquery.
 
-![capstone-architecture](images/altschool-capstone.png)
+![olist-store-brazil-architecture](images/olist-store-brazil-architecture.gif)
 
 
 ## Data Transformations
@@ -36,11 +36,11 @@ Over 15 models were built and to properly explain them I shall be classifying th
 
 - Base Models: This model prefixed with `base_` was joined with a staging model to give extra context to the model. The model is not used anywhere else downstream so there is no reason to make it a staging model. For this project, the `product_category_name_translation` table served as a base model to the `products` table to translate the product_category_name to English from Portuguese.
 
-- Staging Models: This model prefixed with `stg_` serves as a source that maps one-to-one with the raw tables. This helps with complex queries downstream. Each staging model has a "<model_name>.yml" file where unique, not null, and relationship tests are defined. For this project, renaming columns and selecting suitable data types were handled by our staging models. 
+- Staging Models: This model prefixed with `stg_` serves as a source that maps one-to-one with the raw tables. This helps with complex queries downstream. Each staging model has a "<model_name>.yml" file where unique, not null, and relationship tests are defined and also descriptions of columns are included. For this project, renaming columns and selecting suitable data types were done with the staging models. 
 
 - Intermediate Models: This model prefixed with `int_` performs complex queries like joins and aggregations. It is built upon the staging models.
 
-- Final Models: This model prefixed with `fct_` provides clean and transformed data requested by the stakeholder. They are usually answers to specific business logic.
+- Final Models: This model prefixed with `fct_` provides clean and transformed data requested by the stakeholder. They are usually narrowed down to a specific business goal/objective.
 
 ## Prerequisites
 - Google Cloud Platform account
@@ -59,7 +59,7 @@ git clone https://github.com/bazuayelewis/olist-store-brazil.git
 ### Creating Kaggle API Token
 1. Go to your [Kaggle](https://www.kaggle.com/settings) Account
 2. Create a new token
-3. Copy your key and username
+3. Copy your key and username from the JSON file
 
 ### Creating a Service Account
 1. Go to [Google Cloud Service Account](https://console.cloud.google.com/iam-admin/serviceaccounts)
@@ -106,7 +106,7 @@ Once all services are healthy. Go to [`http://127.0.0.1:8080/`](http://127.0.0.1
 Navigate to the airflow UI and login with your credentials. If not set use default credentials:- username: *`airflow`*, password: *`airflow`* 
 
 After successfully logging in, navigate to the `elt-psql-to-bigquery` DAG and manually trigger it. This could also be set to run on a schedule.
-
+![airflow-dag-run](images/airflow-dag-run.png)
 
 ## Analysis
 1. Which product categories have the highest sales?
@@ -115,11 +115,11 @@ SELECT
     product_category_name
     , total_sales 
 FROM 
-    reporting.fct_sales_by_category
+    olist_reporting.fct_sales_by_category
 WHERE 
     total_sales = (
         SELECT MAX(total_sales) AS highest_sales
-        FROM reporting.fct_sales_by_category
+        FROM olist_reporting.fct_sales_by_category
         )
 ```
 
@@ -130,7 +130,7 @@ WHERE
 SELECT 
     AVG(delivery_time) AS avg_deliver_time
 FROM 
-    reporting.fct_avg_delivery_time
+    olist_reporting.fct_avg_delivery_time
 --Average delivery time: 2 days 29 hours 27 minutes 36 seconds
 ```
 
@@ -140,7 +140,7 @@ FROM
 ```sql
 -- TOP 5 STATES WITH THE MOST ORDERS
 SELECT customer_state, total_orders
-FROM reporting.fct_orders_by_state
+FROM olist_reporting.fct_orders_by_state
 ORDER BY total_orders desc   --Not needed since the int_orders_by_state model is already ordered
 LIMIT 5
 ```

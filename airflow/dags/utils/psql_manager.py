@@ -34,17 +34,17 @@ def load_data_to_psql(file_names: list, data_path: str, connection_string: str) 
     logging.info("Loading CSV files to PostgreSQL database")
     try:
         engine = create_engine(connection_string)
-        column_list = []
+        table_list = []
         for file in file_names:
             table_name = _get_table_names(file)
             df = pd.read_csv(f"{data_path}/{file}")
             df.to_sql(table_name, engine, if_exists="replace", index=False)
-            column_list.append(table_name)
+            table_list.append(table_name)
             logging.info(f"Table {table_name} from {file} file loaded successfully")
     except Exception as e:
         logging.error(f"Error loading data to PostgreSQL: {e}")
         raise e
-    return column_list
+    return table_list
 
 
 def extract_from_psql(table_name: str, connection_string: str):
